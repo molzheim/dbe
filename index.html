@@ -10,12 +10,21 @@
             src: url('fonts/VistaSansOT-Book.otf') format('opentype');
             font-weight: bold;
         }
-
-        .chart-container {
-            width: 100%;
-            max-width: 800px;
-            margin: 0 auto;
-            position: relative;
+        html, body {
+    margin: 0;
+    padding: 0;
+    width: 600px;   /* Match .chart-container width */
+    height: 600px;  /* Match .chart-container height */
+    overflow: hidden;
+}
+                .chart-container {
+            width: 600px;   /* Set your desired width */
+            height: 600px;  /* Set your desired height */
+            position: absolute;
+            top: 0;
+            left: 0;
+            box-sizing: border-box;
+            overflow: hidden;
         }
 
         .chart-container svg {
