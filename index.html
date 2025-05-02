@@ -7,7 +7,7 @@
     <style>
         @font-face {
             font-family: 'VistaSansOT-Bold';
-            src: url('VistaSansOT-Book.otf') format('opentype');
+            src: url('fonts/VistaSansOT-Book.otf') format('opentype');
             font-weight: bold;
         }
 
@@ -79,14 +79,14 @@
                     <g transform="translate(100,100)">
                         <path id="purple-curve" d="M 230,150 A 100,100 0 0,1 350,235" stroke="#A02B93" stroke-width="14" fill="none" stroke-linecap="round" />
                         <circle cx="348" cy="231" r="14" fill="#A02B93" />
-                        <image class="static" href="economisch.svg" x="340" y="222" width="17" height="15" />
+                        <image class="static" href="SVG/economisch.svg" x="340" y="222" width="17" height="15" />
 
                         <text class="path-text"  dy="3">
                             <textPath href="#purple-curve" startOffset="50%" text-anchor="middle">Economisch</textPath>
                         </text>
                         <path id="light-blue-curve" d="M 350,266 A 100,100 0 0,1 236,350" stroke="#0088CA" stroke-width="14" fill="none" stroke-linecap="round" />
                         <circle cx="236" cy="349" r="14" fill="#0088CA" />
-                        <image class="static" href="sociaal.svg" x="226" y="341" width="20" height="18" />
+                        <image class="static" href="SVG/sociaal.svg" x="226" y="341" width="20" height="18" />
 
                         <text class="path-text"  dy="3">
                             <textPath href="#light-blue-curve" startOffset="50%" text-anchor="middle" method="align">
@@ -96,7 +96,7 @@
 
                         <path id="dark-blue-curve" d="M 205,340 A 100,100 0 0,1 160,205" stroke="#006091" stroke-width="14" fill="none" stroke-linecap="round" />
                         <circle cx="160" cy="205" r="14" fill="#006091" />
-                        <image class="static" href="ecologisch.svg" x="147" y="191" width="26" height="26" />
+                        <image class="static" href="SVG/ecologisch.svg" x="147" y="191" width="26" height="26" />
 
                         <text class="path-text"  dy="3">
                             <textPath href="#dark-blue-curve" startOffset="50%" text-anchor="middle" method="align" text-transform: uppercase>
@@ -105,7 +105,7 @@
                         </text>
 
                     </g>
-                    <image class="center-image" href="image_model.png" x="280" y="280" width="140" height="140" />
+                    <image class="center-image" href="PNG/image_model.png" x="280" y="280" width="140" height="140" />
 
                 <text x="286" y="160" text-anchor="end" font-family="VistaSansOT-Bold" font-size="9px" fill="#BAD1E0" transform="rotate(-17, 330, 160)">
                     Toonaangevend
@@ -206,7 +206,7 @@ scores.forEach((score, i) => {
         path.setAttribute("fill", "#687CA2");
         chart.appendChild(path);
         const centerImage = document.querySelector(".center-image");
-        centerImage.setAttribute("href", `image_${i}.png`);
+        centerImage.setAttribute("href", `PNG/image_${i}.png`);
 
         // Get the bounding box of the hovered path element
         const bbox = event.target.getBoundingClientRect();
@@ -226,7 +226,7 @@ scores.forEach((score, i) => {
     path.addEventListener("mouseleave", () => {
         path.setAttribute("fill", colors[parseInt(path.getAttribute('data-index'))]); // Use stored index
         const centerImage = document.querySelector(".center-image");
-        centerImage.setAttribute("href", "image_model.png");
+        centerImage.setAttribute("href", "PNG/image_model.png");
         popup.style.visibility = 'hidden'; // Hide the popup
     });
 
