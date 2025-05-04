@@ -7,26 +7,26 @@
     <style>
         @font-face {
             font-family: 'VistaSansOT-Bold';
-            src: url('fonts/VistaSansOT-Book.otf') format('opentype');
+            src: url('VistaSansOT-Book.otf') format('opentype');
             font-weight: bold;
         }
+
         html, body {
     margin: 0;
     padding: 0;
-    width: 600px;   /* Match .chart-container width */
-    height: 600px;  /* Match .chart-container height */
+    width: 100%;
+    height: 100%;
     overflow: hidden;
 }
-                .chart-container {
-            width: 600px;   /* Set your desired width */
-            height: 600px;  /* Set your desired height */
-            position: absolute;
-            top: 0;
-            left: 0;
-            box-sizing: border-box;
-            overflow: hidden;
-        }
 
+.chart-container {
+    width: 100%;
+    max-width: 600px;
+    aspect-ratio: 1 / 1;
+    margin: 0 auto;
+    position: relative;
+    overflow: hidden;
+}
         .chart-container svg {
             display: block;
             width: 100%;
