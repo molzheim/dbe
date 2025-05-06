@@ -10,7 +10,11 @@
             src: url('VistaSansOT-Book.otf') format('opentype');
             font-weight: bold;
         }
-
+        @media (max-width: 780px) {
+            .popup {
+                display: none !important;
+            }
+        }
         html, body {
             margin: 0;
             padding: 0;
