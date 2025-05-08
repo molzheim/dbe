@@ -69,8 +69,11 @@
             z-index: 10;
             visibility: visible; /* Make it visible by default */
             font-family: 'VistaSansOT-Bold'; /* Or any other simple font */
-            font-size: 12px;
+            font-size: 10px;
             pointer-events: none; /* Ensure the popup doesn't interfere with hover events */
+            max-width: 60%;
+            transform: translateX(13%); /* Move the element back by half of its width */
+            line-height: 1.6; 
         }
 
         @media (max-width: 600px) {
