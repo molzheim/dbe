@@ -141,7 +141,7 @@
         const removeIndices = [6];
         
         const scores = [10, 7.5, 10, 7.5, 5, 5, 2.5, 5, 2.5, 5, 2.5, 7.5];
-        const labels = ["Veiligheid", "Leefbaarheid", "Inclusiviteit", "Klimaatadaptatie", "Natuur & Biodiversiteit", "Bronnenmanagement", "G", "Bezoekers & Bestedingen", "Toeristisch aanbod", "Bereikbaarheid"]; // Labels simplified
+        const labels = ["Veiligheid", "Leefbaarheid", "Inclusiviteit", "Klimaatadaptatie", "Natuur & \nBiodiversiteit", "Bronnenmanagement", "G", "Bezoekers & \nBestedingen", "Toeristisch aanbod", "Bereikbaarheid"]; // Added proper line breaks
         const descriptions = [ // Add your descriptions here, matching the order of your labels
             "Een veilige omgeving is de basis voor een succesvolle bestemming. Om dit inzichtelijk te maken kijken we onder andere naar overlast, ondermijningsrisico's en de veiligheidsbeleving.",
             "De kwaliteit van leven voor de lokale bevolking in relatie tot toerisme staat centraal in deze indicator. Hiervoor kijken we naar de balans tussen de voordelen en nadelen van toerisme voor de gemeenschap, waaronder de mate van toeristische druk en (ervaren) bewonersprofijt.",
@@ -211,6 +211,23 @@
             const startAngle = theta[i] + gap;
             const endAngle = theta[i + 1] - gap;
             const segmentRadius = innerRadius + (score / 10) * (outerRadius - innerRadius);
+            
+            // Determine color-based spacing
+            // - Blue segments (0-5) should have slightly more space
+            // - Purple segments (7-9) keep their current spacing
+            // - Multi-line labels need minimal additional space
+            
+            let textRadiusAdjustment = 10; // Base spacing for most labels
+            
+            // Adjust for blue segments (indices 0-5)
+            if (i <= 5) {
+                textRadiusAdjustment = 13; // More space for blue segments
+            }
+            
+            // Add minimal extra space for any multi-line label
+            if (labels[i].includes('\n')) {
+                textRadiusAdjustment += 1; // Just a tiny bit more for multi-line
+            }
         
             // Create background arc
             const [bgX1, bgY1] = polarToCartesian(outerRadius, startAngle);
@@ -274,24 +291,31 @@
             chart.appendChild(path);
         
             // Create text arc paths - separate arc for each segment text
-            const textRadius = outerRadius + 10; // Slightly beyond the outer arc for visibility
+            // Use the per-segment radius adjustment defined above
+            const textRadius = outerRadius + textRadiusAdjustment;
+            
             const midAngle = (startAngle + endAngle) / 2; // Calculate the middle angle of the segment
             
             // Create arc path for text with unique ID
             const arcPathID = `arcPath${i}`;
             const arcPath = document.createElementNS(svgNS, "path");
             
-            // The critical change: Use a simpler path structure for the text path
+            // Adjust arc length to be slightly shorter than the segment arc
+            // This creates better spacing for the text
+            const textArcGap = 0.05; // Gap for text arcs (larger than segment gaps)
+            const textStartAngle = startAngle + textArcGap;
+            const textEndAngle = endAngle - textArcGap;
+            
             // For the first half (indices 0-5), we need to flip the text direction
             if (i < 6) {
                 // For the left half of the chart, text should be upside down (flipped)
-                const [arcStartX, arcStartY] = polarToCartesian(textRadius, endAngle);
-                const [arcEndX, arcEndY] = polarToCartesian(textRadius, startAngle);
+                const [arcStartX, arcStartY] = polarToCartesian(textRadius, textEndAngle);
+                const [arcEndX, arcEndY] = polarToCartesian(textRadius, textStartAngle);
                 arcPath.setAttribute("d", `M ${arcStartX},${arcStartY} A ${textRadius},${textRadius} 0 0,0 ${arcEndX},${arcEndY}`);
             } else {
                 // For the right half, text should be right-side up
-                const [arcStartX, arcStartY] = polarToCartesian(textRadius, startAngle);
-                const [arcEndX, arcEndY] = polarToCartesian(textRadius, endAngle);
+                const [arcStartX, arcStartY] = polarToCartesian(textRadius, textStartAngle);
+                const [arcEndX, arcEndY] = polarToCartesian(textRadius, textEndAngle);
                 arcPath.setAttribute("d", `M ${arcStartX},${arcStartY} A ${textRadius},${textRadius} 0 0,1 ${arcEndX},${arcEndY}`);
             }
             
@@ -301,15 +325,66 @@
             chart.appendChild(arcPath);
             
             // Create text element and attach to path
-            const labelText = labels[i].replace(" /n ", " ");
-            const textElement = createTextOnPath(
-                arcPathID, 
-                labelText, 
-                colors[i], 
-                "VistaSansOT-Bold, Arial, sans-serif", 
-                "9px", 
-                i
-            );
+            const labelText = labels[i];
+            let textElement;
+            
+            // Handle multi-line labels
+            if (labelText.includes('\n')) {
+                // For multi-line labels, create a special text element with tspans
+                textElement = document.createElementNS(svgNS, "text");
+                const textPath = document.createElementNS(svgNS, "textPath");
+                textPath.setAttribute("href", `#${arcPathID}`);
+                textPath.setAttribute("startOffset", "50%");
+                textPath.setAttribute("text-anchor", "middle");
+                
+                const [firstPart, secondPart] = labelText.split('\n');
+                
+                if (i < 6) {
+                    // Left side - both lines should be flipped
+                    const tspan1 = document.createElementNS(svgNS, "tspan");
+                    tspan1.setAttribute("x", "0");
+                    tspan1.setAttribute("dy", "-0.55em"); // More vertical spacing
+                    tspan1.textContent = firstPart;
+                    
+                    const tspan2 = document.createElementNS(svgNS, "tspan");
+                    tspan2.setAttribute("x", "0");
+                    tspan2.setAttribute("dy", "1.1em"); // More vertical spacing
+                    tspan2.textContent = secondPart;
+                    
+                    textPath.appendChild(tspan1);
+                    textPath.appendChild(tspan2);
+                } else {
+                    // Right side - normal text
+                    const tspan1 = document.createElementNS(svgNS, "tspan");
+                    tspan1.setAttribute("x", "0");
+                    tspan1.setAttribute("dy", "-0.55em"); // More vertical spacing
+                    tspan1.textContent = firstPart;
+                    
+                    const tspan2 = document.createElementNS(svgNS, "tspan");
+                    tspan2.setAttribute("x", "0");
+                    tspan2.setAttribute("dy", "1.1em"); // More vertical spacing
+                    tspan2.textContent = secondPart;
+                    
+                    textPath.appendChild(tspan1);
+                    textPath.appendChild(tspan2);
+                }
+                
+                textElement.appendChild(textPath);
+                textElement.setAttribute("fill", colors[i]);
+                textElement.setAttribute("font-size", "9px");
+                textElement.setAttribute("font-family", "VistaSansOT-Bold, Arial, sans-serif");
+                textElement.setAttribute("font-weight", "bold");
+            } else {
+                // Single line labels use the helper function
+                textElement = createTextOnPath(
+                    arcPathID, 
+                    labelText, 
+                    colors[i], 
+                    "VistaSansOT-Bold, Arial, sans-serif", 
+                    "9px", 
+                    i
+                );
+            }
             
             chart.appendChild(textElement);
         });
